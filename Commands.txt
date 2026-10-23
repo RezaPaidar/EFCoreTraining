@@ -1,0 +1,8 @@
+﻿dotnet tool install --global dotnet-ef
+
+dotnet ef migrations add InitialCreate
+dotnet ef migration add InitialCreate --project EFCoreTraining
+
+dotnet ef database update --project EFCoreTraining
+
+dotnet ef migrations remove --project EFCoreTraining

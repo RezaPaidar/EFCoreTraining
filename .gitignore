@@ -1,0 +1,50 @@
+# Build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebugPublic/
+[Rr]eleases/
+x64/
+x86/
+[Ww]in32/
+[Aa]rm/
+[Aa]rm64/
+artifacts/
+
+# Visual Studio / IDE files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test and coverage output
+[Tt]est[Rr]esult*/
+coverage/
+coverage.*
+*.coverage
+*.coveragexml
+
+# NuGet and package output
+*.nupkg
+*.snupkg
+**/packages/*
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Local settings and secrets
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
