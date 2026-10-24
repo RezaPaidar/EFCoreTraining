@@ -1,8 +1,18 @@
 ﻿dotnet tool install --global dotnet-ef
 
 dotnet ef migrations add InitialCreate
+Add-Migration AddProductIndexes -Project EFCoreTraining
 dotnet ef migration add InitialCreate --project EFCoreTraining
+dotnet ef migrations add AddSoftDeleteToProduct --project EFCoreTraining.csproj --startup-project EFCoreTraining.csproj
+
 
 dotnet ef database update --project EFCoreTraining
+Update-Database -Project EFCoreTraining
+dotnet ef database update --project EFCoreTraining.csproj --startup-project EFCoreTraining.csproj
+
 
 dotnet ef migrations remove --project EFCoreTraining
+
+
+
+
