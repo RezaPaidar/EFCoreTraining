@@ -1,3 +1,4 @@
+using System.Text.Json;
 using EFCoreTraining;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,8 @@ while (true)
     Console.WriteLine("16. Read Categories with Split Query");
     Console.WriteLine("17. Read Categories with Filtered Include");
     Console.WriteLine("18. Simulate Concurrency Conflict");
+    Console.WriteLine("19. Insert Product with JSONB Metadata");
+    Console.WriteLine("20. Search Products by JSONB Containment");
     Console.WriteLine("0. Exit");
 
     int choice = ReadInt("Choice: ");
@@ -89,6 +92,16 @@ while (true)
             case 18:
                 Simulate_Concurrency_Conflict(ReadInt("Product ID for concurrency demo: "));
                 break;
+            case 19:
+                Add_Product_With_Jsonb(
+                    ReadText("Product name: "),
+                    ReadDecimal("Price: "),
+                    ReadJson("Enter JSON metadata: "));
+                break;
+            case 20:
+                Search_Products_By_Jsonb(
+                    ReadJson("Enter JSON containment filter: "));
+                break;
             default:
                 Console.WriteLine("Invalid choice.");
                 break;
@@ -127,6 +140,22 @@ int ReadInt(string prompt)
     }
 }
 
+string ReadJson(string prompt)
+{
+    while (true)
+    {
+        string json = ReadText(prompt);
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            return json;
+        }
+        catch (JsonException)
+        {
+            Console.WriteLine("Invalid JSON. Please enter a valid JSON object.");
+        }
+    }
+}
 decimal ReadDecimal(string prompt)
 {
     while (true)
@@ -146,7 +175,8 @@ void Create_Product(string name, decimal price)
         var product = new Product
         {
             Name = name,
-            Price = price
+            Price = price,
+            Tags = new List<string> { "apple", "smartphone", "5g", "flagship" }
         };
 
         ctx.Products.Add(product);
@@ -187,6 +217,7 @@ void Update_Product(int id, string name, decimal price)
         {
             product.Name = name;
             product.Price = price;
+            product.Tags = new List<string> { "apple", "smartphone", "5g", "flagship" };
             ctx.SaveChanges();
             Console.WriteLine($"Product Updated - Product Name: {product?.Name}, Product Price: {product?.Price}");
         }
@@ -469,5 +500,36 @@ void Simulate_Concurrency_Conflict(int productId)
     }
 }
 
+void Add_Product_With_Jsonb(string name, decimal price, string jsonMetadata)
+{
+    using var ctx = new AppDbContext();
 
+    var product = new Product
+    {
+        Name = name,
+        Price = price,
+        Tags = new List<string> { "apple", "smartphone", "5g", "flagship" },
+        JsonMetadata = jsonMetadata
+    };
+
+    ctx.Products.Add(product);
+    ctx.SaveChanges();
+    Console.WriteLine($"Product with JSONB metadata added. ID: {product.Id}");
+}
+
+void Search_Products_By_Jsonb(string jsonFilter)
+{
+    using var ctx = new AppDbContext();
+
+    var products = ctx.Products
+        .AsNoTracking()
+        .Where(p => EF.Functions.JsonContains(p.JsonMetadata, jsonFilter))
+        .ToList();
+
+    Console.WriteLine($"Matching products: {products.Count}");
+    foreach (var product in products)
+    {
+        Console.WriteLine($"ID: {product.Id} | Name: {product.Name} | Metadata: {product.JsonMetadata}");
+    }
+}
 

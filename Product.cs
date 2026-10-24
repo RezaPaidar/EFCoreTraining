@@ -1,4 +1,4 @@
-﻿namespace EFCoreTraining
+namespace EFCoreTraining
 {
     public class Product
     {
@@ -9,5 +9,9 @@
         public bool IsDeleted { get; set; } = false;
         public int? categoryId { get; set; }
         public Category? Category { get; set; }
+        public List<string> Tags { get; set; } = new();
+        public string JsonMetadata { get; set; } = "{}";
+
     }
 }
+
